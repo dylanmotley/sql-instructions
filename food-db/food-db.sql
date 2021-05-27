@@ -1,78 +1,89 @@
 -- create and select the database
-DROP DATABASE IF EXISTS bmdb;
-CREATE DATABASE bmdb;
-USE bmdb;
+DROP DATABASE IF EXISTS fddb;
+CREATE DATABASE fddb;
+USE fddb;
 
--- create Movie table
--- DROP TABLE IF EXISTS Movie;
-Create table Movie (
-ID 			integer 		primary key auto_increment,
-Title 		varchar(255) 	not null unique,
-Year 		integer 		not null,
-Rating 		varchar(5) 		not null,
-Director 	varchar(255) 	not null
--- CONSTRAINT utitle unique (Title)
+Create table Customer (
+ID 			        integer 		    primary key auto_increment,
+CustomerNumber 		varchar(5) 	        not null unique,
+firstname 		    varchar(255) 		not null,
+lastname 		    varchar(255) 		not null,
+email 	            varchar(75) 	    not null,
+phonenumber         varchar(12)         not null
 );
 
--- create Actor table
--- DROP TABLE IF EXISTS Actor;
-Create table Actor (
+Create table Category (
 ID 			integer 		primary key auto_increment,
-FirstName 	varchar(255) 	not null,
-LastName 	varchar(255) 	not null,
-Gender 		varchar(1) 		not null,
-BirthDate 	date 			not null,
-CONSTRAINT unq_actor unique (FirstName, LastName, BirthDate)
+Name 	    varchar(100) 	not null unique
 );
 
--- create Credits table
--- business rule - combo of actor+movie must be unique
-Create table Credit (
-ID 				integer 			primary key auto_increment,
-ActorID 		integer 			not null,
-MovieID 		integer 			not null,
-Role		 	varchar(255)		not null,
-Foreign Key (ActorID) references Actor(ID),
-Foreign Key (MovieID) references Movie(ID),
-CONSTRAINT act_mov unique (ActorID, MovieID)
+Create table MenuItem (
+ID 				integer 			    primary key auto_increment,
+Categoryid 		integer 			    not null,
+Name     		varchar(55) 			not null,
+Price		 	decimal(10,2)		    not null,
+Calories        integer                 not null,
+Foreign Key (categoryid) references Category(id),
+constraint cat_name unique (Categoryid, Name)
+);
+
+Create table OrderTicket (
+ID 				integer 			    primary key auto_increment,
+customerid 		integer 			    not null,
+Name     		varchar(255) 			not null,
+orderdate		timestamp		        not null,
+status          varchar(1)              not null,
+total           decimal(10,2)           not null,
+Foreign Key (customerid) references customer(id),
+CONSTRAINT cus_ord unique (customerid, orderdate)
+);
+
+Create table LineItem (
+ID 				integer 			    primary key auto_increment,
+orderticketid 		integer 			    not null,
+menuitemid      integer 			    not null,
+Qty		        integer		            not null,
+Foreign Key (orderticketid) references orderticket(id),
+Foreign Key (menuitemid) references menuitem(id),
+CONSTRAINT ord_men unique (orderticketid, menuitemid)
 );
 
 -- Add some movies
- insert into Movie VALUES
- 	(1, 'Revenge of the Nerds', 1984, 'R', 'Jeff Kanew'),
- 	(2, 'Avengers Infinity War', 2018, 'PG-13', 'Anthony Russo, John Russo'),
-    (3, 'The Shawshank Redemption', 1994, 'R', 'Frank Darabont'),
-    (4, 'The Godfather', '1972', 'R', 'Francis Coppola'),
-    (5, 'The Dark Knight', '2008', 'PG-13', 'Christopher Nolan'),
-    (6, 'Inception', '2010', 'PG-13', 'Christopher Nolan');
-    
+--  insert into Movie VALUES
+--  	(1, 'Revenge of the Nerds', 1984, 'R', 'Jeff Kanew'),
+--  	(2, 'Avengers Infinity War', 2018, 'PG-13', 'Anthony Russo, John Russo'),
+--     (3, 'The Shawshank Redemption', 1994, 'R', 'Frank Darabont'),
+--     (4, 'The Godfather', '1972', 'R', 'Francis Coppola'),
+--     (5, 'The Dark Knight', '2008', 'PG-13', 'Christopher Nolan'),
+--     (6, 'Inception', '2010', 'PG-13', 'Christopher Nolan');
+--     
 -- Add some actors
- insert into Actor VALUES
- 	(1, 'Robert', 'Downey Jr.', 'M', '1965-4-4'),
- 	(2, 'Chris', 'Hemsworth', 'M', '1983-09-11'),
-    (3, 'Scarlett', 'Johansson', 'F', '1984-11-22'),
- 	(4, 'Robert', 'Carradine', 'M', '1954-3-24'),
- 	(5, 'Anthony', 'Edwards', 'M', '1962-7-19'),
-    (6, 'Tim', 'Robbins', 'M', '1958-10-16'),
-    (7, 'Morgan', 'Freeman', 'M', '1937-6-1'),
-    (8, 'Marlon', 'Brando', 'M', '1924-4-3'),
-    (9, 'Al', 'Pacino', 'M', '1924-4-25'),
-    (10, 'Christian', 'Bale', 'M', '1974-1-30'),
-    (11, 'Heath', 'Ledger', 'M', '1979-4-4');
-    
+--  insert into Actor VALUES
+--  	(1, 'Robert', 'Downey Jr.', 'M', '1965-4-4'),
+--  	(2, 'Chris', 'Hemsworth', 'M', '1983-09-11'),
+--     (3, 'Scarlett', 'Johansson', 'F', '1984-11-22'),
+--  	(4, 'Robert', 'Carradine', 'M', '1954-3-24'),
+--  	(5, 'Anthony', 'Edwards', 'M', '1962-7-19'),
+--     (6, 'Tim', 'Robbins', 'M', '1958-10-16'),
+--     (7, 'Morgan', 'Freeman', 'M', '1937-6-1'),
+--     (8, 'Marlon', 'Brando', 'M', '1924-4-3'),
+--     (9, 'Al', 'Pacino', 'M', '1924-4-25'),
+--     (10, 'Christian', 'Bale', 'M', '1974-1-30'),
+--     (11, 'Heath', 'Ledger', 'M', '1979-4-4');
+--     
 -- Add movie credits for actors
- insert into Credit (ActorID, MovieID, Role) VALUES
- 	(1, 2, 'Tony Stark - Iron Man'),
-    (2, 2, 'Thor'),
-    (3, 2, 'Natasha Romanoff - Black Widow'),
-    (4, 1, 'Lewis'),
-    (5, 1, 'Gilbert'),
-    (6, 3, 'Andy'),
-    (7, 3, 'Ellis'),
-    (8, 4, 'Don'),
-    (9, 4, 'Michael'),
-    (10, 5, 'Bruce'),
-    (11, 5, 'Joker');
+--  insert into Credit (ActorID, MovieID, Role) VALUES
+--  	(1, 2, 'Tony Stark - Iron Man'),
+--     (2, 2, 'Thor'),
+--     (3, 2, 'Natasha Romanoff - Black Widow'),
+--     (4, 1, 'Lewis'),
+--     (5, 1, 'Gilbert'),
+--     (6, 3, 'Andy'),
+--     (7, 3, 'Ellis'),
+--     (8, 4, 'Don'),
+--     (9, 4, 'Michael'),
+--     (10, 5, 'Bruce'),
+--     (11, 5, 'Joker');
 
 
 -- create a user and grant privileges to that user
