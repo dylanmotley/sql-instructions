@@ -1,7 +1,7 @@
 -- create and select the database
-DROP DATABASE IF EXISTS fddb;
-CREATE DATABASE fddb;
-USE fddb;
+DROP DATABASE IF EXISTS food_db;
+CREATE DATABASE food_db;
+USE food_db;
 
 Create table Customer (
 ID 			        integer 		    primary key auto_increment,
@@ -30,10 +30,9 @@ constraint cat_name unique (Categoryid, Name)
 Create table OrderTicket (
 ID 				integer 			    primary key auto_increment,
 customerid 		integer 			    not null,
-Name     		varchar(255) 			not null,
-orderdate		timestamp		        not null,
-status          varchar(1)              not null,
-total           decimal(10,2)           not null,
+orderdate		timestamp		        not null default current_timestamp,
+status          varchar(1)              not null default 'O',
+total           decimal(10,2)           not null default 0,
 Foreign Key (customerid) references customer(id),
 CONSTRAINT cus_ord unique (customerid, orderdate)
 );
@@ -45,20 +44,19 @@ menuitemid      integer 			    not null,
 Qty		        integer		            not null,
 Foreign Key (orderticketid) references orderticket(id),
 Foreign Key (menuitemid) references menuitem(id),
-CONSTRAINT ord_men unique (orderticketid, menuitemid)
+CONSTRAINT ord_menu unique (orderticketid, menuitemid)
 );
 
 -- Add categories
  insert into Category (Name) VALUES
  	('Appetizers'),
-    ('Entree'),
     ('Salads'),
-    ('Appetizers'),
-    ('Appetizers'),
-
-
+    ('Entree'),
+    ('Sides'),
+    ('Drinks'),
+    ('Desserts');
 
 -- create a user and grant privileges to that user
-DROP USER IF EXISTS bmdb_user@localhost;
-CREATE USER bmdb_user@localhost IDENTIFIED BY 'sesame';
-GRANT SELECT, INSERT, DELETE, UPDATE ON bmdb.* TO bmdb_user@localhost;
+DROP USER IF EXISTS fooddb_user@localhost;
+CREATE USER fooddb_user@localhost IDENTIFIED BY 'sesame';
+GRANT SELECT, INSERT, DELETE, UPDATE ON food_db.* TO fooddb_user@localhost;
