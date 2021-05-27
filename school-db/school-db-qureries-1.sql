@@ -1,0 +1,50 @@
+select * from student;
+
+SELECT * FROM student
+order by lastname, firstname;
+
+-- distinct keyword
+select distinct (state)
+ from student;
+ 
+ -- count function
+ select count(*) from student;
+ 
+ -- how many studnets from ohio?
+ select count(*) from student
+ where state = 'OH';
+ 
+  select count(*) from student
+ where city = 'Washington';
+ 
+ -- how many students per state
+ select state, count(state) count
+ from student
+ group by state
+ order by count desc;
+ 
+ -- use max birthdate
+ select min(birthday) from student;
+
+-- most common middle initial
+ select middleinitial, count(middleinitial) from student 
+ group by middleinitial
+ order by count(middleinitial) desc
+ limit 1;
+ 
+ -- student - course enrollment
+ select lastname, firstname, courseid, grade, subject, name 
+ from student s
+ join enrolled
+ on studentid = s.id
+ join course c
+ on courseid = c.id
+ order by grade, lastname asc;
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
