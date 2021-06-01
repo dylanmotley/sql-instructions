@@ -17,8 +17,8 @@ FirstName 		    nvarchar(20) 		not null,
 LastName 	        nvarchar(20) 	    not null,
 Phone               nvarchar(12)        not null,
 Email               nvarchar(75)        not null,
-Reviewer            Bit                 not null,
-Admin               Bit                 not null
+Reviewer            Bit                 default 0 not null,
+Admin               Bit                 default 0 not null
 );
 
 Create table Vendor (
@@ -30,7 +30,8 @@ City        nvarchar(255) 	not null,
 State       nvarchar(2) 	not null,
 Zip         nvarchar(5) 	not null,
 Phone       nvarchar(12) 	not null,
-Email       nvarchar(100) 	not null        
+Email       nvarchar(100) 	not null,
+Constraint 
 );
 
 Create table Request (
@@ -40,9 +41,9 @@ Description        nvarchar(100) 	    not null,
 Justification      nvarchar(255)	    not null,
 DataNeeded         date                 not null,
 DeliveryMode       nvarchar(25) 	    not null,
-Status             nvarchar(20) 	    not null,
+Status             nvarchar(20) 	    not null default 'New',
 Total              decimal (10,2) 	    not null,
-SubmittedDate      datetime 	        not null,
+SubmittedDate      datetime 	        default getdate() not null,
 ReasonForRejection varchar(10) 	        null,
 foreign key (UserID) references [User](ID)
 );
@@ -71,9 +72,9 @@ constraint req_pdt unique (RequestID, ProductID)
 
 
 insert into [user] (Username, Password, FirstName, LastName, Phone, Email, Reviewer, Admin) VALUES
-	('SYSTEM', 'xxxxx', 'System', 'System', 'XXX-XXX-XXXX', 'system@test.com', 0, 0),
-	('sblessing', 'login', 'Sean', 'Blessing', '513-600-7096', 'sean@blessingtechnology.com', 1, 1),
-	('dmotley', 'alpha', 'Dylan', 'Motley', '513-364-3332', 'motley.dylan60@gmail.com', 2, 2);
+	(1, 'SYSTEM', 'xxxxx', 'System', 'System', 'XXX-XXX-XXXX', 'system@test.com', 0, 0),
+	(2, 'sblessing', 'login', 'Sean', 'Blessing', '513-600-7096', 'sean@blessingtechnology.com', 1, 1),
+	(3, 'dmotley', 'alpha', 'Dylan', 'Motley', '513-364-3332', 'motley.dylan60@gmail.com', 2, 2);
 
 set identity_insert vendor ON
 
